@@ -1,0 +1,167 @@
+================================================================================
+Arithmetic expression — multiplication
+================================================================================
+
+var timeout: int = 30 * 3;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (binary_expr
+      left: (integer_literal)
+      right: (integer_literal))))
+
+================================================================================
+Arithmetic expression — addition
+================================================================================
+
+var total: int = 3 + 5;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (binary_expr
+      left: (integer_literal)
+      right: (integer_literal))))
+
+================================================================================
+Arithmetic expression — subtraction
+================================================================================
+
+var diff: int = 10 - 4;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (binary_expr
+      left: (integer_literal)
+      right: (integer_literal))))
+
+================================================================================
+Arithmetic expression — division
+================================================================================
+
+var half: float = 10 / 2;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (binary_expr
+      left: (integer_literal)
+      right: (integer_literal))))
+
+================================================================================
+Fallback operator
+================================================================================
+
+var mode: str = env("APP_MODE") ?? "dev";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (binary_expr
+      left: (fn_call
+        function: (identifier)
+        (string (string_content)))
+      right: (string (string_content)))))
+
+================================================================================
+Namespace reference — two segments
+================================================================================
+
+var x: int = global::port;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (namespace_ref
+      (identifier)
+      (identifier))))
+
+================================================================================
+Namespace reference — three segments
+================================================================================
+
+var url: str = global::database::host;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (namespace_ref
+      (identifier)
+      (identifier)
+      (identifier))))
+
+================================================================================
+Function call — env()
+================================================================================
+
+var mode: str = env("APP_MODE");
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (fn_call
+      function: (identifier)
+      (string (string_content)))))
+
+================================================================================
+Grouped expression
+================================================================================
+
+var x: int = (3 + 5);
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (grouped_expr
+      (binary_expr
+        left: (integer_literal)
+        right: (integer_literal)))))
+
+================================================================================
+Local namespace reference — single segment
+================================================================================
+
+[server]{
+  bind: str = global::bind;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path (identifier))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (namespace_ref
+        (identifier)
+        (identifier)))))

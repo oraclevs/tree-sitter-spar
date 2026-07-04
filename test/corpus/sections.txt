@@ -1,0 +1,158 @@
+================================================================================
+Simple section
+================================================================================
+
+[server]{
+  port: int = 8080;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path
+      (identifier))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (integer_literal))))
+
+================================================================================
+Exported section
+================================================================================
+
+export [defaults]{
+  workers: int = 4;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path
+      (identifier))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (integer_literal))))
+
+================================================================================
+Nested section path
+================================================================================
+
+[packages.flutter.dependencies]{
+  dio: str = "^5.9.0";
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path
+      (identifier)
+      (identifier)
+      (identifier))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (string (string_content)))))
+
+================================================================================
+Section with spread — local
+================================================================================
+
+[server]{
+  ...defaults;
+  port: int = 9000;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path (identifier))
+    (spread_stmt
+      target: (spread_ref (identifier)))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (integer_literal))))
+
+================================================================================
+Section with namespaced spread
+================================================================================
+
+[server]{
+  ...global::base_server;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path (identifier))
+    (spread_stmt
+      target: (spread_ref
+        (identifier)
+        (identifier)))))
+
+================================================================================
+Optional field
+================================================================================
+
+[server]{
+  log_level?: str;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path (identifier))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type))))
+
+================================================================================
+Empty section
+================================================================================
+
+[projects.python.environments.backend]{};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path
+      (identifier)
+      (identifier)
+      (identifier)
+      (identifier))))
+
+================================================================================
+Multiple fields
+================================================================================
+
+[database]{
+  host: str = "db.internal";
+  port: int = 5432;
+  pool: int = 10;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section_decl
+    path: (section_path (identifier))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (string (string_content)))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (integer_literal))
+    (field_decl
+      name: (identifier)
+      type: (scalar_type)
+      value: (integer_literal))))

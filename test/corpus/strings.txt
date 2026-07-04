@@ -1,0 +1,125 @@
+================================================================================
+Plain string
+================================================================================
+
+var name: str = "keel";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string
+      (string_content))))
+
+================================================================================
+String with interpolation
+================================================================================
+
+var url: str = "http://${host}";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string
+      (string_content)
+      (interpolation
+        (namespace_ref (identifier))))))
+
+================================================================================
+String with multiple interpolations
+================================================================================
+
+var bind: str = "${host}:${port}";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string
+      (interpolation
+        (namespace_ref (identifier)))
+      (string_content)
+      (interpolation
+        (namespace_ref (identifier))))))
+
+================================================================================
+String with namespace interpolation
+================================================================================
+
+var bind: str = "${global::host}:${global::port}";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string
+      (interpolation
+        (namespace_ref
+          (identifier)
+          (identifier)))
+      (string_content)
+      (interpolation
+        (namespace_ref
+          (identifier)
+          (identifier))))))
+
+================================================================================
+String with escape sequence
+================================================================================
+
+var msg: str = "line1\nline2";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string
+      (string_content)
+      (escape_sequence)
+      (string_content))))
+
+================================================================================
+Empty string
+================================================================================
+
+var empty: str = "";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string)))
+
+================================================================================
+String with three-segment namespace in interpolation
+================================================================================
+
+var url: str = "postgres://${global::database::host}/app";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (var_decl
+    name: (identifier)
+    type: (scalar_type)
+    value: (string
+      (string_content)
+      (interpolation
+        (namespace_ref
+          (identifier)
+          (identifier)
+          (identifier)))
+      (string_content))))

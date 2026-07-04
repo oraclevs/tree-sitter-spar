@@ -1,0 +1,34 @@
+{
+  "name": "tree-sitter-spar",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for the Spar configuration language (.spar files)",
+  "license": "MIT",
+  "main": "src/parser.c",
+  "keywords": [
+    "tree-sitter",
+    "spar",
+    "configuration",
+    "parser"
+  ],
+  "scripts": {
+    "build": "tree-sitter generate",
+    "test":  "tree-sitter test",
+    "lint":  "tree-sitter generate --report-states-for-rule source_file"
+  },
+  "dependencies": {
+    "nan": "*"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.20.0"
+  },
+  "tree-sitter": [
+    {
+      "scope":           "source.spar",
+      "file-types":      ["spar"],
+      "highlights":      "queries/highlights.scm",
+      "locals":          "queries/locals.scm",
+      "indents":         "queries/indents.scm",
+      "injection-regex": "spar"
+    }
+  ]
+}
