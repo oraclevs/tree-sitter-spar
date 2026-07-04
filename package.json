@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Tree-sitter grammar for the Spar configuration language (.spar files)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oraclevs/tree-sitter-spar.git"
+  },
   "main": "src/parser.c",
   "keywords": [
     "tree-sitter",
