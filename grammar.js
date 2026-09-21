@@ -32,6 +32,9 @@ module.exports = grammar({
       $.section_decl,
     ),
 
+    // `#[emit]` — attribute on the next top-level var or section.
+    attribute: $ => seq('#[', field('name', $.identifier), ']'),
+
     // ═══════════════════════════════════════════════════════
     // COMMENTS
     // ═══════════════════════════════════════════════════════
@@ -63,6 +66,7 @@ module.exports = grammar({
     // ═══════════════════════════════════════════════════════
 
     var_decl: $ => seq(
+      repeat($.attribute),
       optional(field('export_kw', 'export')),
       'var',
       field('name', $.identifier),
@@ -87,6 +91,7 @@ module.exports = grammar({
     // ═══════════════════════════════════════════════════════
 
     section_decl: $ => seq(
+      repeat($.attribute),
       optional(field('export_kw', 'export')),
       '[',
       field('path', $.section_path),
