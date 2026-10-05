@@ -31,14 +31,19 @@ export var version: str = "1.0.0";
 Optional var with no value
 ================================================================================
 
-var timeout?: int;
+var timeout: Option<int> = none();
 
 --------------------------------------------------------------------------------
 
 (source_file
   (var_decl
     name: (identifier)
-    type: (scalar_type)))
+    type: (named_type
+      (identifier)
+      (type_arguments
+        (scalar_type)))
+    value: (fn_call
+      function: (identifier))))
 
 ================================================================================
 Bool var
@@ -55,32 +60,46 @@ var debug: bool = false;
     value: (boolean_literal)))
 
 ================================================================================
-Dynamic var declaration
+Heterogeneous list declaration
 ================================================================================
 
-dynamic var tags = [2026, "prod", true];
+var tags: List<Any> = [2026, "prod", true];
 
 --------------------------------------------------------------------------------
 
 (source_file
-  (dynamic_decl
+  (var_decl
     name: (identifier)
+    type: (named_type
+      (identifier)
+      (type_arguments
+        (scalar_type)))
     value: (list_literal
       (integer_literal)
-      (string (string_content))
+      (string
+        (string_content))
       (boolean_literal))))
 
 ================================================================================
-Dynamic var optional no value
+Optional list default
 ================================================================================
 
-dynamic var labels?;
+var labels: Option<List<str>> = none();
 
 --------------------------------------------------------------------------------
 
 (source_file
-  (dynamic_decl
-    name: (identifier)))
+  (var_decl
+    name: (identifier)
+    type: (named_type
+      (identifier)
+      (type_arguments
+        (named_type
+          (identifier)
+          (type_arguments
+            (scalar_type)))))
+    value: (fn_call
+      function: (identifier))))
 
 ================================================================================
 Import without alias
@@ -105,22 +124,25 @@ import "config/base.spar" as config;
 
 (source_file
   (import_decl
-    path: (string (string_content))
+    path: (string
+      (string_content))
     alias: (identifier)))
 
 ================================================================================
 Typed list var
 ================================================================================
 
-var ports: [int] = [3000, 8080];
+var ports: List<int> = [3000, 8080];
 
 --------------------------------------------------------------------------------
 
 (source_file
   (var_decl
     name: (identifier)
-    type: (list_type
-      (scalar_type))
+    type: (named_type
+      (identifier)
+      (type_arguments
+        (scalar_type)))
     value: (list_literal
       (integer_literal)
       (integer_literal))))
@@ -143,15 +165,44 @@ var ratio: float = 3.14;
 String list var
 ================================================================================
 
-var paths: [str] = ["src/email", "src/out_mail"];
+var paths: List<str> = ["src/email", "src/out_mail"];
 
 --------------------------------------------------------------------------------
 
 (source_file
   (var_decl
     name: (identifier)
-    type: (list_type
-      (scalar_type))
+    type: (named_type
+      (identifier)
+      (type_arguments
+        (scalar_type)))
     value: (list_literal
-      (string (string_content))
-      (string (string_content)))))
+      (string
+        (string_content))
+      (string
+        (string_content)))))
+
+================================================================================
+Named whole and selective imports
+================================================================================
+
+import fastMath;
+import pkg http/client as client;
+import { add } from "./math.spar";
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (import_decl
+    path: (import_name
+      (identifier)))
+  (import_decl
+    path: (import_name
+      (identifier)
+      (identifier))
+    alias: (identifier))
+  (import_decl
+    (import_item
+      (identifier))
+    path: (string
+      (string_content))))

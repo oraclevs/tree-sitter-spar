@@ -1,6 +1,6 @@
 ; Indent inside section bodies
-(section_decl "{" @indent)
-(section_decl "}" @dedent)
+(struct_decl "{" @indent)
+(struct_decl "}" @dedent)
 
 ; Indent inside list literals that span multiple lines
 (list_literal "[" @indent)

@@ -28,8 +28,9 @@ module.exports = grammar({
     _top_level_item: $ => choice(
       $.import_decl,
       $.var_decl,
-      $.dynamic_decl,
-      $.section_decl,
+      $.struct_decl,
+      $.function_decl,
+      $.impl_decl,
     ),
 
     // `#[emit]` — attribute on the next top-level var or section.
@@ -51,15 +52,13 @@ module.exports = grammar({
     // IMPORTS
     // ═══════════════════════════════════════════════════════
 
-    import_decl: $ => seq(
-      'import',
-      field('path', $.string),
-      optional(seq(
-        'as',
-        field('alias', $.identifier)
-      )),
-      ';'
-    ),
+    import_decl: $ => seq('import', optional('pkg'), choice(
+      seq(field('path', $.string), optional(seq('as', field('alias', $.identifier)))),
+      seq(field('path', $.import_name), optional(seq('as', field('alias', $.identifier)))),
+      seq('{', commaSep1($.import_item), '}', 'from', field('path', $.string))
+    ), ';'),
+    import_name: $ => seq($.identifier, repeat(seq('/', $.identifier))),
+    import_item: $ => seq($.identifier, optional(seq('as', $.identifier))),
 
     // ═══════════════════════════════════════════════════════
     // VARIABLE DECLARATIONS
@@ -68,69 +67,32 @@ module.exports = grammar({
     var_decl: $ => seq(
       repeat($.attribute),
       optional(field('export_kw', 'export')),
-      'var',
+      'var', optional('mut'),
       field('name', $.identifier),
-      optional(field('optional_marker', '?')),
       ':',
       field('type', $._type),
       optional(seq('=', field('value', $._expr))),
       ';'
     ),
 
-    dynamic_decl: $ => seq(
-      'dynamic',
-      'var',
-      field('name', $.identifier),
-      optional(field('optional_marker', '?')),
-      optional(seq('=', field('value', $.list_literal))),
-      ';'
-    ),
-
-    // ═══════════════════════════════════════════════════════
-    // SECTIONS
-    // ═══════════════════════════════════════════════════════
-
-    section_decl: $ => seq(
-      repeat($.attribute),
-      optional(field('export_kw', 'export')),
-      '[',
-      field('path', $.section_path),
-      ']',
-      '{',
-      repeat($._section_item),
-      '}',
-      ';'
-    ),
-
-    section_path: $ => seq(
-      $.identifier,
-      repeat(seq('.', $.identifier))
-    ),
-
-    _section_item: $ => choice(
-      $.field_decl,
-      $.spread_stmt,
-    ),
-
-    field_decl: $ => seq(
-      field('name', $.identifier),
-      optional(field('optional_marker', '?')),
-      ':',
-      field('type', $._type),
-      optional(seq('=', field('value', $._expr))),
-      ';'
-    ),
-
-    spread_stmt: $ => seq(
-      '...',
-      field('target', $.spread_ref),
-      ';'
-    ),
-
-    spread_ref: $ => choice(
-      $.identifier,
-      seq($.identifier, '::', $.identifier),
-    ),
+    struct_decl: $ => seq(repeat($.attribute), optional(choice('export', 'private')),
+      'struct', field('name', $.identifier), optional($.type_parameters),
+      '{', repeat($.field_decl), '}', ';'),
+    type_parameters: $ => seq('<', commaSep1($.identifier), '>'),
+    type_arguments: $ => seq('<', commaSep1($._type), '>'),
+    field_decl: $ => seq(field('name', $.identifier), ':', field('type', $._type),
+      optional(seq('=', field('value', $._expr))), ';'),
+    function_decl: $ => seq(optional('private'), optional('async'), 'fn',
+      field('name', $.identifier), optional($.type_parameters), '(', optional(commaSep1($.parameter)), ')',
+      optional(seq('->', $._type)), $.block, ';'),
+    parameter: $ => choice(seq(optional('mut'), 'self'),
+      seq($.identifier, ':', $._type, optional(seq('=', $._expr)))),
+    tuple_binding: $ => seq('var', '(', $.identifier, ',', $.identifier,
+      repeat(seq(',', $.identifier)), optional(','), ')', optional(seq(':', $._type)), '=', $._expr, ';'),
+    block: $ => seq('{', repeat(choice($.var_decl, $.tuple_binding, $.return_stmt, $.expression_stmt)), '}'),
+    return_stmt: $ => seq('return', optional($._expr), ';'),
+    expression_stmt: $ => seq($._expr, ';'),
+    impl_decl: $ => seq('impl', optional($.type_parameters), $._type, '{', repeat($.function_decl), '}', ';'),
 
     // ═══════════════════════════════════════════════════════
     // TYPES
@@ -138,17 +100,20 @@ module.exports = grammar({
 
     _type: $ => choice(
       $.scalar_type,
-      $.list_type,
+      $.named_type,
+      $.tuple_type,
     ),
 
     scalar_type: $ => choice(
       'str',
       'int',
       'float',
-      'bool',
+      'bool', 'void', 'Any', 'Record',
     ),
 
-    list_type: $ => seq('[', $.scalar_type, ']'),
+    named_type: $ => seq($.identifier, optional($.type_arguments)),
+
+    tuple_type: $ => seq('(', $._type, ',', $._type, repeat(seq(',', $._type)), optional(','), ')'),
 
     // ═══════════════════════════════════════════════════════
     // EXPRESSIONS
@@ -168,8 +133,12 @@ module.exports = grammar({
       $.boolean_literal,
       $.string,
       $.list_literal,
+      $.tuple_literal,
       $.grouped_expr,
+      $.field_access,
     ),
+
+    field_access: $ => prec.left(11, seq($._expr, '.', field('name', choice($.identifier, $.integer_literal)))),
 
     binary_expr: $ => choice(
       // ?? right-associative, lowest precedence
@@ -193,6 +162,8 @@ module.exports = grammar({
     ),
 
     grouped_expr: $ => seq('(', $._expr, ')'),
+
+    tuple_literal: $ => seq('(', $._expr, ',', $._expr, repeat(seq(',', $._expr)), optional(','), ')'),
 
     // ═══════════════════════════════════════════════════════
     // LITERALS
@@ -269,18 +240,18 @@ module.exports = grammar({
         $.identifier,
         alias('str', $.identifier),
       )),
-      '(',
-      optional(seq(
-        $._expr,
-        repeat(seq(',', $._expr)),
-      )),
-      ')'
+      optional($.type_arguments),
+      '(', optional(commaSep1($.named_argument)), ')'
     )),
 
     // ═══════════════════════════════════════════════════════
     // IDENTIFIER
     // ═══════════════════════════════════════════════════════
 
+    named_argument: $ => seq(field('name', $.identifier), ':', field('value', $._expr)),
+
     identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
   }
 });
+
+function commaSep1(rule) { return seq(rule, repeat(seq(',', rule)), optional(',')); }

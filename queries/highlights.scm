@@ -4,7 +4,7 @@
 "export"  @keyword.modifier
 "import"  @keyword.import
 "as"      @keyword
-"dynamic" @keyword
+["struct" "fn" "impl" "return" "mut" "async"] @keyword
 
 ; ─── Type keywords ───────────────────────────────────────────────────────────
 
@@ -43,23 +43,19 @@
 ; ─── Import path ─────────────────────────────────────────────────────────────
 
 (import_decl path: (string) @string.special)
+(import_decl path: (import_name) @namespace)
 (import_decl alias: (identifier) @namespace)
 
-; ─── Section paths ───────────────────────────────────────────────────────────
-
-(section_path (identifier) @type)
-(section_decl export_kw: "export" @keyword.modifier)
+(struct_decl name: (identifier) @type)
+(named_type (identifier) @type)
+(type_parameters (identifier) @type.parameter)
+(function_decl name: (identifier) @function)
+(named_argument name: (identifier) @variable.parameter)
 
 ; ─── Field names ─────────────────────────────────────────────────────────────
 
 (field_decl name: (identifier) @variable.member)
 (var_decl   name: (identifier) @variable)
-
-; ─── Optional marker ─────────────────────────────────────────────────────────
-
-(var_decl     optional_marker: "?" @punctuation.special)
-(field_decl   optional_marker: "?" @punctuation.special)
-(dynamic_decl optional_marker: "?" @punctuation.special)
 
 ; ─── Namespace references ────────────────────────────────────────────────────
 
@@ -76,11 +72,6 @@
 ; ─── Function calls ──────────────────────────────────────────────────────────
 
 (fn_call function: (identifier) @function.builtin)
-
-; ─── Spread operator ─────────────────────────────────────────────────────────
-
-(spread_stmt "..."  @operator)
-(spread_ref  "::"   @operator)
 
 ; ─── Binary operators ────────────────────────────────────────────────────────
 

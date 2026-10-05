@@ -1,12 +1,11 @@
 ; Global variable declarations introduce bindings
 (var_decl     name: (identifier) @definition.var)
-(dynamic_decl name: (identifier) @definition.var)
 
 ; Section field declarations
 (field_decl name: (identifier) @definition.field)
 
 ; Section paths are type-like definitions
-(section_decl path: (section_path) @definition.type)
+(struct_decl name: (identifier) @definition.type)
 
 ; Import aliases introduce namespace bindings
 (import_decl alias: (identifier) @definition.namespace)

@@ -9,26 +9,29 @@ var version: str = "1";
 
 (source_file
   (var_decl
-    (attribute (identifier))
+    (attribute
+      (identifier))
     (identifier)
     (scalar_type)
-    (string (string_content))))
+    (string
+      (string_content))))
 
 ==================
 emit attribute on a section
 ==================
 
 #[emit]
-[Server] {
+struct Server {
   port: int = 1;
 };
 
 ---
 
 (source_file
-  (section_decl
-    (attribute (identifier))
-    (section_path (identifier))
+  (struct_decl
+    (attribute
+      (identifier))
+    (identifier)
     (field_decl
       (identifier)
       (scalar_type)

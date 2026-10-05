@@ -1,158 +1,108 @@
 ================================================================================
-Simple section
+Struct with defaults
 ================================================================================
-
-[server]{
-  port: int = 8080;
-};
-
+struct Server { port: int = 8080; };
 --------------------------------------------------------------------------------
 
 (source_file
-  (section_decl
-    path: (section_path
-      (identifier))
+  (struct_decl
+    (identifier)
     (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (integer_literal))))
-
-================================================================================
-Exported section
-================================================================================
-
-export [defaults]{
-  workers: int = 4;
-};
-
---------------------------------------------------------------------------------
-
-(source_file
-  (section_decl
-    path: (section_path
-      (identifier))
-    (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (integer_literal))))
-
-================================================================================
-Nested section path
-================================================================================
-
-[packages.flutter.dependencies]{
-  dio: str = "^5.9.0";
-};
-
---------------------------------------------------------------------------------
-
-(source_file
-  (section_decl
-    path: (section_path
       (identifier)
+      (scalar_type)
+      (integer_literal))))
+
+================================================================================
+Exported struct
+================================================================================
+export struct Defaults { workers: int = 4; };
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_decl
+    (identifier)
+    (field_decl
       (identifier)
-      (identifier))
-    (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (string (string_content)))))
+      (scalar_type)
+      (integer_literal))))
 
 ================================================================================
-Section with spread — local
+Nested named field
 ================================================================================
-
-[server]{
-  ...defaults;
-  port: int = 9000;
-};
-
+struct Dependencies { version: str; }; struct Package { dependencies: Dependencies = Dependencies(version: "1.0"); };
 --------------------------------------------------------------------------------
 
 (source_file
-  (section_decl
-    path: (section_path (identifier))
-    (spread_stmt
-      target: (spread_ref (identifier)))
+  (struct_decl
+    (identifier)
     (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (integer_literal))))
-
-================================================================================
-Section with namespaced spread
-================================================================================
-
-[server]{
-  ...global::base_server;
-};
-
---------------------------------------------------------------------------------
-
-(source_file
-  (section_decl
-    path: (section_path (identifier))
-    (spread_stmt
-      target: (spread_ref
+      (identifier)
+      (scalar_type)))
+  (struct_decl
+    (identifier)
+    (field_decl
+      (identifier)
+      (named_type
+        (identifier))
+      (fn_call
         (identifier)
+        (named_argument
+          (identifier)
+          (string
+            (string_content)))))))
+
+================================================================================
+Explicit mutable variable
+================================================================================
+struct Server { port: int; }; var mut server: Server = Server(port: 9000);
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_decl
+    (identifier)
+    (field_decl
+      (identifier)
+      (scalar_type)))
+  (var_decl
+    (identifier)
+    (named_type
+      (identifier))
+    (fn_call
+      (identifier)
+      (named_argument
+        (identifier)
+        (integer_literal)))))
+
+================================================================================
+Required Option field
+================================================================================
+struct Response { header: Option<str>; };
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_decl
+    (identifier)
+    (field_decl
+      (identifier)
+      (named_type
+        (identifier)
+        (type_arguments
+          (scalar_type))))))
+
+================================================================================
+Default Option field
+================================================================================
+struct Response { header: Option<str> = none(); };
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_decl
+    (identifier)
+    (field_decl
+      (identifier)
+      (named_type
+        (identifier)
+        (type_arguments
+          (scalar_type)))
+      (fn_call
         (identifier)))))
-
-================================================================================
-Optional field
-================================================================================
-
-[server]{
-  log_level?: str;
-};
-
---------------------------------------------------------------------------------
-
-(source_file
-  (section_decl
-    path: (section_path (identifier))
-    (field_decl
-      name: (identifier)
-      type: (scalar_type))))
-
-================================================================================
-Empty section
-================================================================================
-
-[projects.python.environments.backend]{};
-
---------------------------------------------------------------------------------
-
-(source_file
-  (section_decl
-    path: (section_path
-      (identifier)
-      (identifier)
-      (identifier)
-      (identifier))))
-
-================================================================================
-Multiple fields
-================================================================================
-
-[database]{
-  host: str = "db.internal";
-  port: int = 5432;
-  pool: int = 10;
-};
-
---------------------------------------------------------------------------------
-
-(source_file
-  (section_decl
-    path: (section_path (identifier))
-    (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (string (string_content)))
-    (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (integer_literal))
-    (field_decl
-      name: (identifier)
-      type: (scalar_type)
-      value: (integer_literal))))

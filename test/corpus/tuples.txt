@@ -1,0 +1,34 @@
+================================================================================
+Tuple type, literal, and local binding
+================================================================================
+
+fn main() -> int {
+  var pair: (int, str) = (42, "ok");
+  var (code, label) = pair;
+  return code;
+};
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (function_decl
+    (identifier)
+    (scalar_type)
+    (block
+      (var_decl
+        (identifier)
+        (tuple_type
+          (scalar_type)
+          (scalar_type))
+        (tuple_literal
+          (integer_literal)
+          (string
+            (string_content))))
+      (tuple_binding
+        (identifier)
+        (identifier)
+        (namespace_ref
+          (identifier)))
+      (return_stmt
+        (namespace_ref
+          (identifier))))))

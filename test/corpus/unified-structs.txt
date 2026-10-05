@@ -1,0 +1,77 @@
+================================================================================
+Generic typed struct and named constructor
+================================================================================
+struct Box<T> { value: T; note: Option<str> = none(); };
+fn main() -> int { var box: Box<int> = Box<int>(value: 9); return box.value; };
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_decl
+    (identifier)
+    (type_parameters
+      (identifier))
+    (field_decl
+      (identifier)
+      (named_type
+        (identifier)))
+    (field_decl
+      (identifier)
+      (named_type
+        (identifier)
+        (type_arguments
+          (scalar_type)))
+      (fn_call
+        (identifier))))
+  (function_decl
+    (identifier)
+    (scalar_type)
+    (block
+      (var_decl
+        (identifier)
+        (named_type
+          (identifier)
+          (type_arguments
+            (scalar_type)))
+        (fn_call
+          (identifier)
+          (type_arguments
+            (scalar_type))
+          (named_argument
+            (identifier)
+            (integer_literal))))
+      (return_stmt
+        (field_access
+          (namespace_ref
+            (identifier))
+          (identifier))))))
+
+================================================================================
+Required fields and struct methods
+================================================================================
+export struct User { name: str; age: int = 0; };
+impl User { fn ageOf(self) -> int { return self.age; }; };
+--------------------------------------------------------------------------------
+
+(source_file
+  (struct_decl
+    (identifier)
+    (field_decl
+      (identifier)
+      (scalar_type))
+    (field_decl
+      (identifier)
+      (scalar_type)
+      (integer_literal)))
+  (impl_decl
+    (named_type
+      (identifier))
+    (function_decl
+      (identifier)
+      (parameter)
+      (scalar_type)
+      (block
+        (return_stmt
+          (field_access
+            (namespace_ref
+              (identifier))
+            (identifier)))))))
